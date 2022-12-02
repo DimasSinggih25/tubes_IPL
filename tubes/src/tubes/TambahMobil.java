@@ -23,7 +23,15 @@ import javax.swing.table.DefaultTableModel;
  * @author Kelompok6
  */
 public class TambahMobil extends javax.swing.JFrame {
-
+     
+    PreparedStatement insert;
+    Connection con;
+    
+    public TambahMobil() {
+        initComponents();
+        table_update();
+        autoID();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -47,8 +47,6 @@ public class Rental extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         txtfee = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtdate = new com.toedter.calendar.JDateChooser();
-        txtdue = new com.toedter.calendar.JDateChooser();
         total = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
@@ -156,22 +154,6 @@ public class Rental extends javax.swing.JFrame {
         jPanel1.add(jLabel7);
         jLabel7.setBounds(370, 44, 70, 22);
 
-        txtdate.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                txtdatePropertyChange(evt);
-            }
-        });
-        jPanel1.add(txtdate);
-        txtdate.setBounds(180, 210, 139, 30);
-
-        txtdue.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                txtduePropertyChange(evt);
-            }
-        });
-        jPanel1.add(txtdue);
-        txtdue.setBounds(350, 210, 139, 30);
-
         total.setBackground(new java.awt.Color(204, 204, 255));
         total.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         total.setText("Total");
@@ -261,7 +243,17 @@ public class Rental extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-       
+        jComboBox1.getSelectedItem().toString();
+        txtmerk.setText("");
+        txtmodl.setText("");
+        txt_custid.setText("");
+        txtname.setText("");
+        txtdate.setCalendar(null);
+        txtdue.setCalendar(null);
+        txtjml.setText("");
+        txtharga.setText("");
+        txtfee.setText("");
+    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_custidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_custidActionPerformed
@@ -347,8 +339,6 @@ public class Rental extends javax.swing.JFrame {
     private javax.swing.JButton total;
     private javax.swing.JTextField txt_custid;
     private javax.swing.JTextField txtavl;
-    private com.toedter.calendar.JDateChooser txtdate;
-    private com.toedter.calendar.JDateChooser txtdue;
     private javax.swing.JTextField txtfee;
     private javax.swing.JTextField txtharga;
     private javax.swing.JTextField txtjml;

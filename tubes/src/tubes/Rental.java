@@ -243,17 +243,7 @@ public class Rental extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        jComboBox1.getSelectedItem().toString();
-        txtmerk.setText("");
-        txtmodl.setText("");
-        txt_custid.setText("");
-        txtname.setText("");
-        txtdate.setCalendar(null);
-        txtdue.setCalendar(null);
-        txtjml.setText("");
-        txtharga.setText("");
-        txtfee.setText("");
-    }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_custidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_custidActionPerformed

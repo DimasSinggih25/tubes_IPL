@@ -23,7 +23,15 @@ import javax.swing.table.DefaultTableModel;
  * @author Kelompok6
  */
 public class TambahMobil extends javax.swing.JFrame {
-
+     
+    PreparedStatement insert;
+    Connection con;
+    
+    public TambahMobil() {
+        initComponents();
+        table_update();
+        autoID();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -231,7 +239,39 @@ public class TambahMobil extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-          
+        try {   
+            String registrasi =txtregno.getText();
+            String nopol=txtnopol.getText();
+            String merk =txtmerk.getText();
+            String model =txtmodel.getText();
+            String hargah =txtharga.getText();
+//            String status = jComboBox1.getSelectedItem().toString();  
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            insert = con.prepareStatement("insert into daftar_mobil (no_regis,nomor_polisi,Mekr,Model,Status,harga)values(?,?,?,?,'Tersedia',?)");
+            insert.setString(1,registrasi);
+            insert.setString(2,nopol);
+            insert.setString(3,merk);
+            insert.setString(4,model);
+//            insert.setString(5,status);
+            insert.setString(5, hargah);
+            
+            insert.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data Tersimpan");
+            
+            txtnopol.setText("");
+            txtharga.setText("");
+            txtmerk.setText("");
+            txtmodel.setText("");
+            table_update(); 
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }   
 
     }//GEN-LAST:event_jButton1ActionPerformed
 

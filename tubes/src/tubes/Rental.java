@@ -23,7 +23,35 @@ import javax.swing.JOptionPane;
  * @author Kelompok6
  */
 public class Rental extends javax.swing.JFrame {
+    public Rental() {
+        initComponents();
+        LoadCategory();
+        txtdate.setDateFormatString("yyyy/MM/dd");
+        txtdue.setDateFormatString("yyyy/MM/dd");
+    }
     
+    Connection con;
+    PreparedStatement pst = null;
+    PreparedStatement pst1 = null;
+    PreparedStatement pst2 = null;
+    ResultSet rs;
+    ResultSet rs1;
+    
+    public void LoadCategory() {
+       try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root", "");
+            pst = con.prepareStatement("SELECT * FROM daftar_mobil");
+            
+            rs = pst.executeQuery();
+            jComboBox1.removeAllItems();
+            while (rs.next()) {
+                jComboBox1.addItem(rs.getString(2));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -243,7 +271,16 @@ public class Rental extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
+        jComboBox1.getSelectedItem().toString();
+        txtmerk.setText("");
+        txtmodl.setText("");
+        txt_custid.setText("");
+        txtname.setText("");
+        txtdate.setCalendar(null);
+        txtdue.setCalendar(null);
+        txtjml.setText("");
+        txtharga.setText("");
+        txtfee.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txt_custidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_custidActionPerformed
@@ -252,7 +289,28 @@ public class Rental extends javax.swing.JFrame {
     
     private void txt_custidKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_custidKeyPressed
         // TODO add your handling code here:
-       
+       if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            try {
+                String id = txt_custid.getText();
+
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root", "");
+                pst = con.prepareStatement("select * from customer where nik = ? ");
+                pst.setString(1, id);
+                rs = pst.executeQuery();
+
+                if (rs.next() == false){
+                    JOptionPane.showMessageDialog(null, "Customer Tidak Tersedia");
+                }else{
+                    String productname = rs.getString("nama");
+                    txtname.setText(productname.trim());
+                }
+            }catch(ClassNotFoundException ex){
+                Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+            }catch(SQLException ex){
+                Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_txt_custidKeyPressed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed

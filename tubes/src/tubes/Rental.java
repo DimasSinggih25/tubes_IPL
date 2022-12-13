@@ -315,17 +315,66 @@ public class Rental extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
-        
+        try {
+            String car_id = jComboBox1.getSelectedItem().toString();
+                    
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root", "");
+            pst2 = con.prepareStatement("SELECT * FROM daftar_mobil WHERE nomor_polisi = ? ");
+            pst2.setString(1, car_id);
+            rs1 = pst2.executeQuery();
+
+            if (rs1.next() == false){
+                JOptionPane.showMessageDialog(null, "Mobil Tidak Tersedia");
+            }else{            
+                String Tersedia = rs1.getString("Status");
+                String merek = rs1.getString("Merk");
+                String hargah = rs1.getString("harga");
+                String modle = rs1.getString("Model");
+                txtavl.setText(Tersedia.trim());
+                txtmerk.setText(merek.trim());
+                txtharga.setText(hargah.trim());
+                txtmodl.setText(modle.trim());
+                if (Tersedia.equals("Tersedia")){   
+                    txt_custid.setEnabled(true);
+                    txtmerk.setEnabled(true);
+                    txtmodl.setEnabled(true);
+                    txtname.setEnabled(true);
+                    txtdate.setEnabled(true);
+                    txtdue.setEnabled(true);
+                    txtharga.setEnabled(true);
+                    txtfee.setEnabled(true);
+                }else{           
+                    txt_custid.setEnabled(false);
+                    txtmerk.setEnabled(false);
+                    txtmodl.setEnabled(false);
+                    txtname.setEnabled(false);
+                    txtdate.setEnabled(false);
+                    txtdue.setEnabled(false);
+                    txtharga.setEnabled(false);
+                    txtfee.setEnabled(false);
+                }
+            }
+        }catch (ClassNotFoundException ex){
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        }catch(SQLException ex){
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        }                                
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-       
+       Main m = new Main();
+            this.hide();
+            m.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void totalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_totalActionPerformed
         // TODO add your handling code here:
-        
+        int a1 = Integer.parseInt(txtjml.getText());
+        int a2 = Integer.parseInt(txtharga.getText());
+        int total1 = a1*a2;
+        txtfee.setText(" "+total1);
     }//GEN-LAST:event_totalActionPerformed
 
     private void txtdatePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtdatePropertyChange
@@ -339,7 +388,19 @@ public class Rental extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-      
+      try{
+            SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+            String tanggal1 = String.valueOf(date.format(txtdate.getDate()));
+            Date TglPinjam = (Date) date.parse(tanggal1); 
+            
+            String tanggal2 = String.valueOf(date.format(txtdue.getDate()));
+            Date TglKembali = (Date) date.parse(tanggal2);
+            
+            long jmlhari = Math.abs(TglKembali.getTime() - TglPinjam.getTime());
+            txtjml.setText(""+ TimeUnit.MILLISECONDS.toDays(jmlhari));
+        }catch(Exception e){
+            System.out.println(e);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void txtfeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtfeeActionPerformed
@@ -352,7 +413,47 @@ public class Rental extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-      
+      try {
+            String nopol = jComboBox1.getSelectedItem().toString();
+            String merek = txtmerk.getText();
+            String modl = txtmodl.getText();
+            String nik = txt_custid.getText();
+            String nama = txtname.getText();
+            SimpleDateFormat Date_Format = new SimpleDateFormat("yyyy/MM/dd");
+            String date = Date_Format.format(txtdate.getDate());
+            SimpleDateFormat Date_Format1 = new SimpleDateFormat("yyyy/MM/dd");
+            String date2 = Date_Format1.format(txtdue.getDate());
+            String hsewa = txtjml.getText();
+            String biaya = txtharga.getText();
+            String totals = txtfee.getText();
+
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root","");
+            pst = con.prepareStatement("insert into rental (nomor_polisi,merk,model,nik,nama,date,due,hari,biaya,total)values(?,?,?,?,?,?,?,?,?,?)");
+
+            pst.setString(1, nopol);
+            pst.setString(2, merek);
+            pst.setString(3, modl);
+            pst.setString(4, nik);
+            pst.setString(5, nama);
+            pst.setString(6, date);
+            pst.setString(7, date2);
+            pst.setString(8, hsewa);
+            pst.setString(9, biaya);
+            pst.setString(10, totals);
+            pst.executeUpdate();
+
+            pst1 = con.prepareStatement("update daftar_mobil set Status = 'Tidak Tersedia' where nomor_polisi = ?  ");
+            pst1.setString(1, nopol);
+            pst1.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Data Tersimpan");
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Rental.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Rental.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void txtmerkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtmerkActionPerformed
@@ -363,7 +464,28 @@ public class Rental extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-       
+       try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())){
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Rental.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Rental().setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

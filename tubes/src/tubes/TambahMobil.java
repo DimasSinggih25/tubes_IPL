@@ -240,11 +240,11 @@ public class TambahMobil extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         try {   
-            String registrasi =txtregno.getText();
-            String nopol=txtnopol.getText();
-            String merk =txtmerk.getText();
-            String model =txtmodel.getText();
-            String hargah =txtharga.getText();
+            String registrasi = txtregno.getText();
+            String nopol= txtnopol.getText();
+            String merk = txtmerk.getText();
+            String model = txtmodel.getText();
+            String hargah = txtharga.getText();
 //            String status = jComboBox1.getSelectedItem().toString();  
             
             Class.forName("com.mysql.jdbc.Driver");
@@ -277,27 +277,187 @@ public class TambahMobil extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-       
+        txtregno.setText("");
+        txtnopol.setText("");
+        txtmerk.setText("");
+        txtmodel.setText("");
+        txtharga.setText("");
+    
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        int selectedIndex = jTable1.getSelectedRow();
+            try {   
+            String id = model.getValueAt(selectedIndex, 0).toString();
+            String nopol=txtnopol.getText();
+            String merk =txtmerk.getText();
+            String mod =txtmodel.getText();
+            String hargah = txtharga.getText();
+//            String status = jComboBox1.getSelectedItem().toString();
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            insert = con.prepareStatement("update daftar_mobil set nomor_polisi=?,Merk= ?,Model= ?,Status= ,harga=? where no_regis = ?");
+            insert.setString(1,nopol);
+            insert.setString(2,merk);
+            insert.setString(3,mod);
+//            insert.setString(4,status);
+            insert.setString(4, hargah);
+            insert.setString(5,id);
+            insert.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data Diperbaharui!");
+            
+            insert.executeUpdate();
+            jButton3.setEnabled(true);
+            jButton1.setEnabled(true);
+            table_update();
+           
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
         // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        int selectedIndex = jTable1.getSelectedRow();
+            String id = model.getValueAt(selectedIndex, 0).toString();
+            String nopol =txtnopol.getText();
+            String merk =txtmerk.getText();
+            String model1 =txtmodel.getText();
+            String hargah=txtharga.getText();
+//            String status = jComboBox1.getSelectedItem().toString();      
+            
+            try{
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            insert = con.prepareStatement("update daftar_mobil set nomor_polisi= ?,Merk= ?,Model= ?,harga=?,Status='Tersedia' where no_regis= ?");
+            
+            insert.setString(1,nopol);
+            insert.setString(2,merk);
+            insert.setString(3,model1);
+//            insert.setString(4,status);
+            insert.setString(4, hargah);
+            insert.setString(5,id);
+            insert.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data Diperbaharui!");
+           
+            jButton3.setEnabled(false);
+            jButton1.setEnabled(true);
+            
+            }catch (ClassNotFoundException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+            }catch (SQLException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }                                     
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {                                     
+        // TODO add your handling code here:
+        DefaultTableModel d1 = (DefaultTableModel)jTable1.getModel();
+        int selectIndex = jTable1.getSelectedRow();
+         
+        txtregno.setText(d1.getValueAt(selectIndex, 0).toString());
+        txtnopol.setText(d1.getValueAt(selectIndex, 1).toString());
+        txtmerk.setText(d1.getValueAt(selectIndex, 2).toString());
+        txtmodel.setText(d1.getValueAt(selectIndex, 3).toString());
+        txtharga.setText(d1.getValueAt(selectIndex, 4).toString());
+//        jComboBox1.setSelectedItem(d1.getValueAt(selectIndex, 5).toString());
+    }                                    
+    public void autoID(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            Statement s = con.createStatement();
+            
+            ResultSet rs = s.executeQuery("select Max(no_regis) from daftar_mobil");
+            rs.next();
+            rs.getString("Max(no_regis)");
+            
+            if(rs.getString("Max(no_regis)")==null){               
+                txtregno.setText("A0001");             
+            }else{
+                long id =  Long.parseLong(rs.getString("Max(no_regis)").substring(2,rs.getString("Max(no_regis)").length()));
+                id++;       
+                txtregno.setText("A0" + String.format("%03d", id));            
+            }     
+        }catch (ClassNotFoundException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }catch (SQLException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-       
+       DefaultTableModel d1 = (DefaultTableModel)jTable1.getModel();
+        int selectIndex = jTable1.getSelectedRow();
+         
+        txtregno.setText(d1.getValueAt(selectIndex, 0).toString());
+        txtnopol.setText(d1.getValueAt(selectIndex, 1).toString());
+        txtmerk.setText(d1.getValueAt(selectIndex, 2).toString());
+        txtmodel.setText(d1.getValueAt(selectIndex, 3).toString());
+        txtharga.setText(d1.getValueAt(selectIndex, 4).toString());
     }//GEN-LAST:event_jTable1MouseClicked
+    
+    public void autoID(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            Statement s = con.createStatement();
+            
+            ResultSet rs = s.executeQuery("select Max(no_regis) from daftar_mobil");
+            rs.next();
+            rs.getString("Max(no_regis)");
+            
+            if(rs.getString("Max(no_regis)")==null){               
+                txtregno.setText("A0001");             
+            }else{
+                long id =  Long.parseLong(rs.getString("Max(no_regis)").substring(2,rs.getString("Max(no_regis)").length()));
+                id++;       
+                txtregno.setText("A0" + String.format("%03d", id));            
+            }     
+        }catch (ClassNotFoundException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }catch (SQLException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }
     
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        int selectedIndex = jTable1.getSelectedRow();
+            try {
+                String id = model.getValueAt(selectedIndex, 0).toString();
+                int dialogResult = JOptionPane.showConfirmDialog (null, "Data akan di Hapus","Warning",JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.YES_OPTION){
+                      
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            insert = con.prepareStatement("delete from daftar_mobil where no_regis = ?");
         
+            insert.setString(1,id);
+            insert.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data Terhapus!");
+        
+            jButton3.setEnabled(false);
+            table_update();
+           
+           }
+            jButton1.setEnabled(true);
+            jButton3.setEnabled(false);
+        }catch (ClassNotFoundException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }catch (SQLException ex){
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void txtmodelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtmodelActionPerformed
@@ -306,9 +466,38 @@ public class TambahMobil extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-       
+        Main m = new Main();
+            this.hide();
+            m.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
     
+    private void table_update() {
+        int CC;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            insert = con.prepareStatement("SELECT * FROM daftar_mobil");
+            ResultSet Rs = insert.executeQuery();
+            ResultSetMetaData RSMD = Rs.getMetaData();
+            CC = RSMD.getColumnCount();
+            DefaultTableModel DFT = (DefaultTableModel) jTable1.getModel();
+            DFT.setRowCount(0);
+
+            while (Rs.next()) {
+                Vector v2 = new Vector();
+                for (int ii = 1; ii <= CC; ii++) {
+                    v2.add(Rs.getString("no_regis"));
+                    v2.add(Rs.getString("nomor_polisi"));
+                    v2.add(Rs.getString("Merk"));
+                    v2.add(Rs.getString("Model"));
+                    v2.add(Rs.getString("harga"));
+                    v2.add(Rs.getString("Status"));
+                }
+                DFT.addRow(v2);
+            }
+        } catch (Exception e) {
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -318,6 +507,11 @@ public class TambahMobil extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+         java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new TambahMobil().setVisible(true);
+            }
+        });
        
     }
 

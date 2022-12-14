@@ -21,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Ayu
+ * @author ayu
  */
 public class Customer extends javax.swing.JFrame {
 
@@ -30,7 +30,12 @@ public class Customer extends javax.swing.JFrame {
      */
     public Customer() {
         initComponents();
+        table_update();
     }
+
+    Connection con;
+    PreparedStatement pst;
+    ResultSet rs;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -177,9 +182,61 @@ public class Customer extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+    private void table_update() {
+        int CC;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            pst = con.prepareStatement("SELECT * FROM customer");
+            ResultSet Rs = pst.executeQuery();
+   
+            ResultSetMetaData RSMD = Rs.getMetaData();
+            CC = RSMD.getColumnCount();
+            DefaultTableModel DFT = (DefaultTableModel) jTable1.getModel();
+            DFT.setRowCount(0);
 
+            while (Rs.next()) {
+                Vector v2 = new Vector();
+                for (int ii = 1; ii <= CC; ii++) {
+                    v2.add(Rs.getString("nik"));
+                    v2.add(Rs.getString("nama"));
+                    v2.add(Rs.getString("alamat"));
+                    v2.add(Rs.getString("no_hp"));
+                }
+                DFT.addRow(v2);
+            }
+        }catch (Exception e){
+        }
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+           try {   
+            String nik =txtcustid.getText();
+            String nama =txtname.getText();
+            String alamat =txtaddress.getText();  
+            String no_hp =txtmobile.getText();
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            pst = con.prepareStatement("insert into customer (nik,nama,alamat,no_hp)values(?,?,?,?)");
+            pst.setString(1,nik);
+            pst.setString(2,nama);
+            pst.setString(3,alamat); 
+            pst.setString(4,no_hp); 
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Data Tersimpan");
+            
+            txtcustid.setText("");
+            txtname.setText("");
+            txtaddress.setText("");
+            txtmobile.setText("");
+            table_update();
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(TambahMobil.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txtcustidKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcustidKeyPressed
@@ -188,10 +245,17 @@ public class Customer extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        Main m = new Main();
+            this.hide();
+            m.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        txtcustid.setText("");
+        txtname.setText("");
+        txtaddress.setText("");
+        txtmobile.setText("");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

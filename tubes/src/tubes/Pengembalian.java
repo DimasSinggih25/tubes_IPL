@@ -21,10 +21,41 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Kelompok6
+ * @author lil uzoy
  */
 public class Pengembalian extends javax.swing.JFrame {
-    
+    public Pengembalian() {
+        initComponents();
+        table_update();
+        LoadCategory();
+    }
+        Connection con;
+        PreparedStatement pst = null;
+        PreparedStatement pst1 = null;
+        PreparedStatement pst2 = null; 
+        PreparedStatement pst3 = null; 
+        PreparedStatement pst4 = null;
+        PreparedStatement pst5 = null;
+        ResultSet rs;
+        ResultSet rs1;
+        ResultSet rs2;
+        ResultSet rs3;
+        
+    public void LoadCategory() {
+       try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root", "");
+            pst4 = con.prepareStatement("SELECT * FROM rental");
+            
+            rs3 = pst4.executeQuery();
+            car_id.removeAllItems();
+            while (rs3.next()) {
+                car_id.addItem(rs3.getString(2));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -217,17 +248,47 @@ public class Pengembalian extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     private void table_update() {
+        int CC;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil","root","");
+            pst1 = con.prepareStatement("SELECT * FROM pengembalian_mobil");
+            ResultSet Rs = pst1.executeQuery();
+            ResultSetMetaData RSMD = Rs.getMetaData();
+            CC = RSMD.getColumnCount();
+            DefaultTableModel DFT = (DefaultTableModel) jTable1.getModel();
+            DFT.setRowCount(0);
 
+            while (Rs.next()) {
+                Vector v2 = new Vector();
+                for (int ii = 1; ii <= CC; ii++) {
+                    v2.add(Rs.getString("nomor_polisi"));
+                    v2.add(Rs.getString("nik"));
+                    v2.add(Rs.getString("nama"));
+                    v2.add(Rs.getString("return_date"));
+                    v2.add(Rs.getString("elp"));
+                    v2.add(Rs.getString("fine"));
+                }
+                DFT.addRow(v2);
+            }
+        } catch (Exception e) {
+        }
     }  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
 //        car_id.setSelectedIndex(0);
-       
+        txt_custid.setText("");
+        txnama.setText("");
+        txtdue.setText("");
+        txtelp.setText("");
+        txtfine.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-         
+         Main m = new Main();
+            this.hide();
+            m.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtelpActionPerformed
@@ -240,12 +301,81 @@ public class Pengembalian extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
+        try {
+            String car_id1 = car_id.getSelectedItem().toString();
+            String custid = txt_custid.getText();
+            String name = txnama.getText();
+            String returndate = txtdue.getText();
+            String elped = txtelp.getText();
+            String fine = txtfine.getText();
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root", "");
+            
+            pst3 = con.prepareStatement("insert into pengembalian_mobil (nomor_polisi,nik,nama,return_date,elp,fine)values(?,?,?,?,?,?)");
+            pst3.setString(1,car_id1);
+            pst3.setString(2,custid);
+            pst3.setString(3,name);
+            pst3.setString(4,returndate); 
+            pst3.setString(5,elped); 
+            pst3.setString(6,fine); 
+            pst3.executeUpdate();
+            
+            pst = con.prepareStatement("update daftar_mobil set Status = 'Tersedia' where nomor_polisi = ?  ");
+            pst.setString(1, car_id1);
+            pst.executeUpdate();
+            
+            pst2 = con.prepareStatement("Delete from rental where nomor_polisi = ?  ");
+            pst2.setString(1, car_id1);
+            pst2.executeUpdate();            
+            
+            JOptionPane.showMessageDialog(this, "Data Diperbaharui!");
+        }catch (ClassNotFoundException ex){
+            Logger.getLogger(Rental.class.getName()).log(Level.SEVERE, null, ex);
+        }catch (SQLException ex){
+            Logger.getLogger(Rental.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void car_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_car_idActionPerformed
         // TODO add your handling code here:
-        
+        try{
+            String nopol = car_id.getSelectedItem().toString();
+                    
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/tubes_rental_mobil", "root", "");
+            pst5 = con.prepareStatement("select nomor_polisi,nik,nama,due,hari,DATEDIFF(NOW(),due) as elap from rental where nomor_polisi = ? ");
+            pst5.setString(1, nopol);
+            rs2 = pst5.executeQuery();
+            if (rs2.next() == false){
+                JOptionPane.showMessageDialog(null, "Data Tidak Tersedia");
+            }else{
+                String nikh = rs2.getString("nik");
+                txt_custid.setText(nikh.trim());
+                
+                String nama = rs2.getString("nama");
+                txnama.setText(nama.trim());
+                
+                String tgl_kml = rs2.getString("due");
+                txtdue.setText(tgl_kml.trim());
+                
+                String elp = rs2.getString("elap");
+                int elaped = Integer.parseInt(elp);
+                  if(elaped>0){
+                    txtelp.setText(elp);
+                    int fine = elaped * 200000;
+                    txtfine.setText(String.valueOf(fine));
+                  }else{
+                    txtelp.setText("0");
+                    txtfine.setText("0");
+                  }
+            }
+           
+        }catch (ClassNotFoundException ex){
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        }catch(SQLException ex){
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_car_idActionPerformed
 
     private void txtdueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdueActionPerformed
@@ -261,7 +391,31 @@ public class Pengembalian extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-       
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Pengembalian().setVisible(true);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

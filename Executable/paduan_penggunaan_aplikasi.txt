@@ -1,0 +1,8 @@
+Paduan penggunaan Aplikasi Rental Mobil.
+1. Masuk kedalam aplikasi dengan melakukan Login dengan memasukan username "admin" dan password "admin".
+2. Setelah masuk kedalam aplikasi, admin disuguhkan dengan beberapa tombol yang akan masuk kedalam laman selanjutnya, diantaranya ada tambah mobil, customer, sewa mobil, pengembalian, dan logout.
+3. Tambah mobil, dalam laman ini admin dapat menambahkan mobil dengan langsung memasukan data mobil yang akan dimasukkan, dan dapat juga melakukan update data maupun hapus data mobil.
+4. Customer, dalam laman ini admin dapat menambahkan data customer yang akan melakukan rental mobil.
+5. Sewa, dalam laman ini admin dapat menyewakan mobil kepada customer berdasarkan nomor polisi dari mobil yang tersedia berikut dengan merk, model, dan harga sewa dari mobil yang akan disewa, lalu admin dapat memasukan nik customer maka secara otomatis nama dari customer akan muncul. Kemudian admin memasukan tanggal sewa dan tanggal pengembalian mobil. lalu menekan tombol "hari sewa" untuk menampilkan jumlah hari sewa mobil, lalu menekan tombol "total" untuk menghitung total harga sewanya. Kemudian menekan tombol "OK" untuk memasukkannya kedalam database.
+6. Pengembalian Mobil, dalam laman ini admin dapat melakukan proses pengembalian mobil yang telah di sewa oleh customer, dengan memilih nomor polisi yang akan dikembalikan. Maka semua datanya akan otomatis muncul, lalu admin tinggal menakan tombol "OK" untuk memasukannya kedalam database. Lalu seluruh data pengembalian mobil akan tampil dalam tabel yang terdapat di bawah form pengembalian.
+7. Logout, dalam tombol ini admin dapat melakukan logout dan akan masuk kembali ke halaman login.

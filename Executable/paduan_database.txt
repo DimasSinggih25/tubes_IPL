@@ -1,0 +1,11 @@
+Langkah-langkah memasukkan database :
+1. Pastikan device sudah terinstall aplikasi xampp server.
+2. Apabila belum terinstal bisa melakukan instalasi terlebih dahulu.
+3. Apabila sudah menginstal aplikasi XAMPP, bisa dibuka aplikasi XAMPP.
+4. Centang pada apache dan mysql.
+5. Lalu masuk browser dilanjut dengan mengetikan "localhost/phpmyadmin".
+6. Lalu klik tombol baru yang ada di sebelah kiri. Lalu isi dengan nama "tubes_rental_mobil".
+7. Lalu, klik tombol Impor yang ada di atas dan bagian tengah laman.
+8. Kemudian, pilih "choose file", lalu buka file "tubes_rental_mobil.sql" yang terdapat dalam folder database.
+9. Lalu klik tombol kirim yang terdapat di bawah halaman.
+Dengan begitu, database dari aplikasi rental mobil ini dapat digunakan.
